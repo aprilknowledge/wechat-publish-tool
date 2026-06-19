@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微信公众号排版</title>
+<meta name="description" content="微信公众号排版工具©四月知行记>
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="header-left">
+      <h1 class="logo"><span class="logo-icon">&#x270E;</span>微信公众号排版工具©四月知行记</h1>
+    </div>
+    <div class="header-right">
+      <button id="settingsBtn" class="btn btn-sm btn-outline" title="设置">&#x2699; 设置</button>
+      <button id="themeToggleBtn" class="theme-toggle" title="切换深色/浅色模式"></button>
+    </div>
+  </div>
+</header>
+
+<section class="toolbar">
+  <div class="toolbar-row">
+    <div class="style-tabs">
+      <button class="style-tab active" data-theme="literary">&#x1F33F; 文艺</button>
+      <button class="style-tab" data-theme="anime">&#x1F3AC; 动漫</button>
+      <button class="style-tab" data-theme="tech">&#x1F4CA; 干货</button>
+    </div>
+    <div class="template-selector">
+      <label for="templateSelect">模板：</label>
+      <select id="templateSelect">
+        <option value="life-musing">生活碎片</option>
+        <option value="clean">简洁通用</option>
+        <option value="rich">文艺随笔</option>
+        <option value="anime-share">动漫分享</option>
+        <option value="reading-note">读书感悟</option>
+        <option value="data-processing">数据处理</option>
+      </select>
+      <button id="loadTemplateBtn" class="btn btn-sm btn-outline">加载</button>
+    </div>
+  </div>
+</section>
+
+<div id="settingsPanel" style="display:none;max-width:1400px;margin:12px auto 0;padding:0 24px;">
+  <div style="background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:16px 20px;box-shadow:var(--shadow);">
+    <h3 style="font-size:0.9rem;margin-bottom:8px;color:var(--text);">DeepSeek AI 设置</h3>
+    <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:10px;">输入 DeepSeek API Key 启用 AI 智能排版。前往 platform.deepseek.com 获取。</p>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input id="apiKeyInput" type="password" placeholder="sk-..." style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;background:var(--bg-input);color:var(--text);">
+      <button id="apiSaveBtn" class="btn btn-accent btn-sm">保存</button>
+    </div>
+    <span id="apiStatus" style="font-size:0.75rem;color:var(--text-secondary);margin-top:6px;display:inline-block;"></span>
+  </div>
+</div>
+
+<main class="main-container">
+  <section class="panel panel-editor">
+    <div class="panel-header">
+      <h2 class="panel-title">编辑器</h2>
+      <div class="panel-actions">
+        <button id="smartFormatBtn" class="btn btn-sm">&#x2728; 智能美化</button>
+        <button id="clearEditorBtn" class="btn btn-sm btn-outline">清空</button>
+      </div>
+    </div>
+    <textarea id="editor" class="editor-textarea" placeholder="在此粘贴纯文本草稿..." spellcheck="false"></textarea>
+        <div class="font-controls">
+      <div class="font-control-group">
+        <span class="font-label">标题</span>
+        <button class="font-btn font-dec" data-target="title">A-</button>
+        <span class="font-val" id="titleSizeVal">1.45</span>
+        <button class="font-btn font-inc" data-target="title">A+</button>
+      </div>
+      <div class="font-control-group">
+        <span class="font-label">小标题</span>
+        <button class="font-btn font-dec" data-target="heading">A-</button>
+        <span class="font-val" id="headingSizeVal">1.15</span>
+        <button class="font-btn font-inc" data-target="heading">A+</button>
+      </div>
+      <div class="font-control-group">
+        <span class="font-label">正文</span>
+        <button class="font-btn font-dec" data-target="body">A-</button>
+        <span class="font-val" id="bodySizeVal">0.9</span>
+        <button class="font-btn font-inc" data-target="body">A+</button>
+      </div>
+    </div>
+
+<div class="editor-footer">
+      <span class="editor-hint">Ctrl+Enter 快速复制</span>
+      <span id="charCount" class="char-count">0 字</span>
+    </div>
+  </section>
+
+  <section class="panel panel-preview">
+    <div class="panel-header">
+      <h2 class="panel-title">预览</h2>
+      <div class="panel-actions">
+        <div class="preview-tabs">
+          <button class="preview-tab active" data-view="rendered">排版效果</button>
+          <button class="preview-tab" data-view="source">HTML 源码</button>
+        </div>
+      </div>
+    </div>
+    <div id="renderedView" class="preview-content rendered-view">
+      <div class="preview-phone-frame">
+        <div class="phone-statusbar"><span>微信公众号排版预览</span></div>
+        <div id="previewOutput" class="wechat-article-preview">
+          <div class="preview-placeholder">
+            <div class="placeholder-icon">&#x1F4C4;</div>
+            <p>在左侧输入文本即可预览</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="sourceView" class="preview-content source-view" style="display:none;">
+      <div class="source-toolbar">
+        <button id="copyHtmlBtn" class="btn btn-accent btn-sm">复制 HTML</button>
+        <span class="source-hint">复制后直接粘贴到微信公众号编辑器</span>
+      </div>
+      <pre id="sourceCode" class="source-code"><code>&lt;!-- HTML 源码将在此显示 --&gt;</code></pre>
+    </div>
+  </section>
+</main>
+
+<footer class="export-bar">
+  <button id="exportBtn" class="btn btn-accent btn-lg">&#x1F4E4; 导出并复制</button>
+  <button id="copyBtn" class="btn btn-lg">&#x1F4CB; 一键复制</button>
+  <button id="previewBtn" class="btn btn-lg btn-outline">&#x1F441; 查看预览</button>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<div id="exportModal" class="export-modal-overlay">
+  <div class="export-modal">
+    <h3>&#x2705; 成品代码已生成</h3>
+    <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;">复制下方代码，Ctrl+V 粘贴到微信公众号编辑器，样式 100% 兼容。</p>
+    <pre id="exportCode"></pre>
+    <div class="export-modal-actions">
+      <button id="exportCopyBtn" class="btn btn-accent">复制到剪贴板</button>
+      <button id="exportCloseBtn" class="btn btn-outline">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

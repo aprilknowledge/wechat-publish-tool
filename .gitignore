@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Temp files
+*.py
+!build.py
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Env
+.env
+.env.local
